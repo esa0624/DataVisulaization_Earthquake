@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Esa Week 1 Project</title>
+
+<script src="https://unpkg.com/d3@5.6.0/dist/d3.min.js"></script>
+<!-- <script src="https://d3js.org/d3.v6.min.js"></script> -->
+<script src="https://unpkg.com/topojson@3.0.2/dist/topojson.js"></script>
+<!-- <script src="https://unpkg.com/@turf/turf/turf.min.js"></script> -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="#home" class="w3-bar-item w3-button"><b>Esa's </b> Final Project</a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="#about" class="w3-bar-item w3-button">About</a>
+      <a href="#dataset" class="w3-bar-item w3-button">Dataset</a>
+      <a href="#task" class="w3-bar-item w3-button" onclick="toggleTaskMenu()">Task</a>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="https://pbs.twimg.com/media/DaKVZwCUQAAVPrV.jpg" alt="Map" width="1500" height="600">
+  <div class="w3-display-middle w3-margin-top w3-center">
+    <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>Taiwan Earthquake Analysis</b></span> </h1>
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content w3-padding" style="max-width:1564px" id="about">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black"> <br/><br/><br/>Project Description</h3>
+    
+    <p>
+        <img
+        id="logo"
+        width="500px"
+        src="https://cdn.britannica.com/63/4563-050-E13A0E05/Taiwan.jpg"
+        />
+    </p>
+    
+    <p>
+        Recently, Taiwan experienced a magnitude 7.4 earthquake, and another magnitude 6.1 earthquake occurred at 3:13 a.m. on April 27th. 
+        With an increase in seismic activity, concerns about the region’s vulnerability to earthquakes and the potential impact on its population, infrastructure, and economy are rising. 
+        Situated in an active seismic zone, earthquake analysis is crucial for assessing risks and disaster management. This project aims to conduct an analysis of earthquake activity in Taiwan, including its frequency and magnitude distribution, with the goal of
+        enhancing seismic resilience and preparedness measures.
+    </p>
+
+    <p>
+        The image shows a map of Taiwan, an island located in East Asia. 
+        The map not only showcases the geographical features of Taiwan but also shows its administrative divisions, including counties and cities.
+    </p>
+    <p>
+      Taiwan is administratively divided into 13 counties, 3 county-controlled cities, and 6 special municipalities. 
+      The counties include areas like Hsinchu County, Miaoli County and Changhua County, among others. 
+      The three cities are Hsinchu City, Keelung City, and Chiayi City. 
+      Special municipalities are Taipei City, New Taipei City, Taoyuan City, Taichung City, Tainan City, and Kaohsiung City.
+      These administrative divisions form the foundation of Taiwan's local governance and organization.
+    </p>
+
+
+    
+</div>
+
+<!-- About Section -->
+<div class="w3-container w3-padding-32" id="dataset">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">Dataset</h3>
+    
+    <p>
+        The dataset used in this analysis is obtained from the <a href="https://gdms.cwa.gov.tw/index.php">Taiwan Central Weather Administration’s Taiwan Geophysical Database Management System</a>,
+        covering earthquake records from Jan 1, 1973, to March 21, 2024 with magnitude greater than 4.0. The dataset includes fifteen attributes:
+    </p>
+    <ul>
+        <li><strong>Date:</strong> Year-Month-Day</li>
+        <li><strong>Time:</strong> hour:minute:sec.ss</li>
+        <li><strong>Latitude:</strong> Latitude (North)</li>
+        <li><strong>Longitude:</strong> Longitude (East)</li>
+        <li><strong>Depth:</strong> Focal Depth (km)</li>
+        <li><strong>ML:</strong> Earthquake magnitude</li>
+        <li><strong>NSTN:</strong> Station number</li>
+        <li><strong>DMIN:</strong> Epicentral distance to the nearest station</li>
+        <li><strong>GAP:</strong> Largest azimuthal separation in degrees between stations</li>
+        <li><strong>TRMS:</strong> Root-mean-square error of the time residuals</li>
+        <li><strong>ERH:</strong> Standard error of the epicenter in km</li>
+        <li><strong>ERZ:</strong> Standard error of the depth in km</li>
+        <li><strong>FIXED:</strong> Focal depth control (F: free run, X: fixed depth)</li>
+        <li><strong>NPH:</strong> Number of phases picked</li>
+        <li><strong>Quality:</strong> Solution quality of the hypocenter based on station distribution and RMS</li>
+    </ul>
+    <p>
+        The quality attribute is classified into four ranks (A, B, C, D) based on the number of stations, gap, and minimal epicentral distance of stations. See the table below for details:
+    </p>
+    <table class="w3-table w3-bordered" style="margin: auto;">
+        <tr>
+            <th>Quality</th>
+            <th>Number of Stations</th>
+            <th>Gap</th>
+            <th>Minimal Epicentral Distance of Station</th>
+        </tr>
+        <tr>
+            <td>A</td>
+            <td>>= 6</td>
+            <td><= 90</td>
+            <td><= Depth or 5 km</td>
+        </tr>
+        <tr>
+            <td>B</td>
+            <td>>= 6</td>
+            <td><= 135</td>
+            <td><= 2 Depth or 10 km</td>
+        </tr>
+        <tr>
+            <td>C</td>
+            <td>>= 6</td>
+            <td><= 180</td>
+            <td><= 50 km</td>
+        </tr>
+        <tr>
+            <td>D</td>
+            <td>others</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    </table>
+    <h4 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">Limitation</h4>
+    <p>
+        The limitation is that this dataset only
+        has attributes of longitude and latitude and thus is
+        difficult in geospatial analysis. Without city or
+        county information, it's challenging to perform
+        geospatial analysis to identify regions with higher
+        seismic activity. Analyzing earthquakes based solely
+        on latitude and longitude coordinates may not provide
+        sufficient details to pinpoint specific areas prone to
+        frequent earthquakes.
+    </p>
+</div>
+
+<!-- Tasks Section-->
+<div class="w3-container w3-padding-32" id="task">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">Tasks</h3>
+    The following are the five tasks I want to explore with
+    the earthquake dataset:
+    <ol>
+      <li>
+        What time in the day does the earthquake occur most
+        frequently?
+      </li>
+      <li>
+        In which month did the earthquake that had the
+        highest magnitude occur?
+      </li>
+      <li>
+        Where do earthquakes of higher magnitude or depth
+        tend to occur more frequently? In which city or
+        county in Taiwan? In which region of Taiwan?
+      </li>
+      <li>
+        Is there any correlation between the magnitude of
+        earthquakes and their focal depth?
+      </li>
+      <li>
+        How do the frequency and magnitude of earthquakes
+        vary over time?
+      </li>
+    </ol>
+</div>
+
+<!-- Additional Tasks Section -->
+<div style="display: flex; flex-direction: row">
+    <!-- Row 1 -->
+    <div id="row1" style="flex: 1; padding: 10px">
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">Task 1: Frequency of Earthquakes</h3>
+      
+      <h4 class="w3-padding-16  w3-text-black">Plot 1: Histogram (2-hour Intervals)</h4>
+      <p>
+        This histogram displays the frequency of
+        earthquakes occurring during different 2-hour
+        intervals in a day (12 time periods in total). It
+        helps to identify the time period when earthquakes
+        are most frequent.
+      </p>
+      <br />
+      <!-- <img
+        src="https://raw.githubusercontent.com/esa0624/cp341/main/histogram.png"
+        alt="Histogram"
+        width="550px"
+      /> -->
+      <!-- <div id="historgram-container">
+        <svg
+          id="histogram"
+          width="600"
+          height="600"
+        ></svg>
+      </div> -->
+
+      <svg id="histogram" width="650" height="600"></svg>
+
+      <br />
+      <br />
+    </div>
+
+    <!-- Row 2 -->
+    <div id="row2" style="flex: 1; padding: 10px">
+        
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black"><br/></h3>
+      <h4 class="w3-padding-16  w3-text-black">
+        Plot 2: Histogram (Group by Earthquake Quality)
+      </h4>
+      <p>
+        This histogram categorizes earthquakes based on
+        their quality, providing a comparison of
+        earthquake frequencies across different quality
+        categories. It helps to understand the
+        relationship between earthquake occurrence and
+        quality and find the time period within a day when
+        earthquakes are most frequent.
+      </p>
+      <!-- <img
+        src="https://raw.githubusercontent.com/esa0624/cp341/main/quality_histogram.png"
+        alt="Histogram 2"
+        width="550px"
+      /> -->
+      <svg
+        id="second-histogram"
+        width="650"
+        height="600"
+      ></svg>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: row">
+    <div id="row3" style="flex: 1; padding: 10px">
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">
+        Task 2: Distribution of Earthquake Magnitude / Max
+        Magnitude
+      </h3>
+
+      <h4 class="w3-padding-16  w3-text-black">Plot 1: Violin Plot</h4>
+      <p>
+        This violin plot shows the distribution of
+        earthquake magnitudes across different months. It
+        helps to identify the month with the highest
+        magnitude earthquake and find the pattern of the
+        magnitude distribution density across different
+        months.
+      </p>
+      <br />
+      <br />
+
+      <img
+        src="static/violin_chart.png"
+        alt="Violin Plot"
+        width="550px"
+      />
+      <!-- <svg id="violin" width="650" height="600"></svg> -->
+    </div>
+
+    <div id="row4" style="flex: 1; padding: 10px">
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black"><br /></h3>
+      
+      <h4 class="w3-padding-16  w3-text-black">Plot 2: Ridgeline Plot</h4>
+      <p>
+        Implemented this plot by referring to
+        <a
+          href="https://plainenglish.io/blog/ridge-plots-with-pythons-seaborn-4de5725881af"
+        >
+          this page.</a
+        >
+      </p>
+      <p>
+        This ridgeline plot visualizes the distribution of
+        earthquake magnitudes for each month using Kernel
+        Density Estimation plots. It helps to find the
+        month with the highest magnitude earthquake and
+        compare the magnitude distribution density across
+        different months, with the y-axis representing the
+        density of earthquake distribution for magnitudes.
+      </p>
+      <img
+        src="static/ridgeline_plot.png"
+        alt="Ridgeline Plot"
+        width="530px"
+      />
+    </div>
+  </div>
+
+  <div id="sidebar" style="flex: 1; padding: 10px">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">
+      Task 3 & 4: Spatial Distribution of Earthquakes by
+      Magnitude & Correlation between Earthquake Magnitude
+      and Depth
+    </h3>
+
+    <p>
+        Task 3 & 4 provide insights into the spatial distribution of earthquakes by magnitude and the correlation between earthquake magnitude and depth. 
+        On the left, you'll find interactive controls to select a specific year, options to color the dots in different ways, as well as the attributes for the x and y axes of the scatterplot. 
+        These controls allow you to customize the visualization according to your preferences and your interest to explore the earthquake data. 
+        The map visualization on the left displays the spatial distribution of earthquakes across Taiwan, providing a geographical perspective of seismic activity. 
+        It provides insights into how earthquakes of different magnitudes are distributed across various regions of the country.
+        On the right, the scatterplot reveals the relationship between earthquake magnitude, depth, quality, and months across a year, allowing for deeper analysis and understanding of seismic patterns.
+        Mouse over the dots in the either the map or the scatterplot will provide detailed information about that specific earthquake. 
+        In addition, mouse over administratice divisions on the map will show the name of the county or city.
+    </p>
+
+
+    <label for="year-select"
+      >Year: <span id="selected-year">1973</span></label
+    >
+    <input
+      id="year-select"
+      type="range"
+      min="1973"
+      max="2024"
+      value="1973"
+      oninput="updateSelectedYear(this.value)"
+    />
+
+    <script>
+      function updateSelectedYear(year) {
+        document.getElementById(
+          'selected-year',
+        ).textContent = year;
+      }
+    </script>
+
+    <div id="controls" style="position: absolute">
+      <label for="xAttrSelect">X value:</label>
+      <select id="xAttrSelect"></select>
+
+      <br />
+      <label for="yAttrSelect">Y value:</label>
+      <select id="yAttrSelect"></select>
+
+      <br />
+      <label for="colorAttrSelect">Color:</label>
+      <select id="colorAttrSelect"></select>
+      <br />
+    </div>
+  </div>
+
+  <div id="container">
+    <div id="map-container">
+     
+      <h3 class="w3-text-black"> <br /><br/>Taiwan Map</h3>
+      <svg id="map" width="650" height="550"></svg>
+    </div>
+    <div id="scatterplot-container">
+      <h3><br /><br /><br/></h3>
+      <svg id="scatterplot"></svg>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: row">
+    <div id="row5" style="flex: 1; padding: 10px">
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16  w3-text-black">Task 5: Frequency and Magnitude of Earthquake Over Time</h3>
+
+      <p>
+        The bar chart visualizes the frequency and magnitude distribution of earthquakes over time. It helps in understanding the temporal patterns of seismic activity in Taiwan and identifying periods of increased or decreased earthquake occurrences.
+      </p>
+      <svg id="bar-chart" width="800" height="600"></svg>
+    </div>
+  </div>
+  
+</div>
+
+
+<script type="module" src="js/bundle.js" defer></script>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-16">
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+/* Adjust font */
+h1, h2, h3, h4 {
+font-family: 'Arial', sans-serif;
+}
+
+
+
+
+tr:nth-child(odd) {
+    background-color: #d6eeee;
+}
+#logo {
+    float: right;
+}
+
+#tooltip {
+    position: absolute;
+    opacity: 0;
+    border: 1px solid black;
+    background-color: white;
+}
+
+.county {
+    fill: #ebf0e4;
+    stroke: gray;
+    stroke-width: 0.1px;
+}
+
+.county:hover {
+    fill: lightgray;
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#map-container {
+    flex: 1;
+    margin-left: 20px;
+}
+
+#scatterplot {
+    width: 600px;
+    height: 580px;
+}
+
+#map-container,
+#scatterplot-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+
